@@ -133,8 +133,6 @@ else
 	exit 1
 fi
 
-
-
 main(){
 	Run_as_Root
 	Identify_Jamf_Binary
@@ -167,8 +165,9 @@ App_Validation(){
 	appName="/Applications/${appName}"
 
 	if [ ! -d "${appName}" ]; then
-		echo "[ERROR] ${appName} not installed"
-		exit 1
+		echo "[INFO] ${appName} not installed"
+		sudo ${jamf_binary} recon
+		exit 0
 	fi
 }
 
@@ -185,7 +184,7 @@ App_Version_Checker(){
 		echo "[INFO]: The currently installed version of ${appName} is the same or newer than the required version."
 
 		if [ "${runMode}" == "Jamf Pro" ]; then
-			sudo ${jamf_binary} recon -verbose
+			sudo ${jamf_binary} recon
 		elif [ "${runMode}" == "Jamf Pro Simulation" ]; then
 			echo "[SIMULATION MODE]: sudo ${jamf_binary} recon -verbose"
 		fi
@@ -193,7 +192,7 @@ App_Version_Checker(){
 		echo "[WARNING]: The currently installed version of ${appName} is older than the required version."
 
 		if [ "${runMode}" == "Jamf Pro" ]; then
-			sudo ${jamf_binary} policy -event ${customTrigger} -verbose
+			sudo ${jamf_binary} policy -event ${customTrigger}
 		elif [ "${runMode}" == "Jamf Pro Simulation" ]; then
 			echo "[SIMULATION MODE]: sudo ${jamf_binary} policy -event ${customTrigger} -verbose"
 		fi
