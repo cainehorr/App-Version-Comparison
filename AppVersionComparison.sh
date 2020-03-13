@@ -71,7 +71,7 @@
 
 if [ "${runMode}" == "Command Line" ] && [ "${runMode}" != "Jamf Pro" ] && [ "${runMode}" != "Jamf Pro Simulation" ]; then
 	## Run Mode: Command Line
-	echo "${0} configured for ${runMode} Run Mode"
+	echo "RUN MODE: ${runMode}"
 	appName="$(/bin/echo ${1})"		
 	requiredVersion="$(/bin/echo ${2})"
 
@@ -90,7 +90,7 @@ if [ "${runMode}" == "Command Line" ] && [ "${runMode}" != "Jamf Pro" ] && [ "${
 	fi
 elif [ "${runMode}" != "Command Line" ] && [ "${runMode}" == "Jamf Pro" ] && [ "${runMode}" != "Jamf Pro Simulation" ]; then
 	# Run Mode: Jamf Pro
-	echo "${0} configured for ${runMode} Run Mode"
+	echo "RUN MODE: ${runMode}"
 	appName="$(/bin/echo ${4})"	
 	requiredVersion="$(/bin/echo ${5})"
 	customTrigger="$(/bin/echo ${6})"
@@ -109,7 +109,7 @@ elif [ "${runMode}" != "Command Line" ] && [ "${runMode}" == "Jamf Pro" ] && [ "
 	fi
 elif [ "${runMode}" != "Command Line" ] && [ "${runMode}" != "Jamf Pro" ] && [ "${runMode}" == "Jamf Pro Simulation" ]; then
 	# Run Mode: Jamf Pro Simulation
-	echo "${0} configured for ${runMode} Run Mode"
+	echo "RUN MODE: ${runMode}"
 	appName="$(/bin/echo ${1})"		
 	requiredVersion="$(/bin/echo ${2})"
 	customTrigger="$(/bin/echo ${3})"
@@ -184,14 +184,15 @@ App_Version_Checker(){
 	if [[ ${currentAppVersion} -ge ${requiredVersion} ]]; then
 		echo "[INFO]: The currently installed version of ${appName} is the same or newer than the required version."
 
-		if [ "${runMode}" == "Jamf" ]; then
+		if [ "${runMode}" == "Jamf Pro" ]; then
 			sudo ${jamf_binary} recon -verbose
 		elif [ "${runMode}" == "Jamf Pro Simulation" ]; then
 			echo "[SIMULATION MODE]: sudo ${jamf_binary} recon -verbose"
 		fi
 	else
 		echo "[WARNING]: The currently installed version of ${appName} is older than the required version."
-		if [ "${runMode}" == "Jamf" ]; then
+
+		if [ "${runMode}" == "Jamf Pro" ]; then
 			sudo ${jamf_binary} policy -event ${customTrigger} -verbose
 		elif [ "${runMode}" == "Jamf Pro Simulation" ]; then
 			echo "[SIMULATION MODE]: sudo ${jamf_binary} policy -event ${customTrigger} -verbose"
